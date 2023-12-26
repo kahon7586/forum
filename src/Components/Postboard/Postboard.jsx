@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './Postboard.css'
+import { DataBaseContext } from '../../Context/DataBaseContextProvider'
 
 const Card = () => {
   return (
@@ -7,7 +8,7 @@ const Card = () => {
       <p className="card-header fs-6">category 1</p>
       <div className="card-body">
         <p className="card-title fs-4">title here</p>
-        <p className="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio, nihil.</p>
+        <p className="card-content">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio, nihil.</p>
       </div>
     </div>
   )
@@ -63,7 +64,7 @@ const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
     const isFinalPage = (currentPage === finalPage ? true : false)
     if(isFirstPage) document.querySelectorAll("#prevPageBtn").forEach((node)=> node.disabled = true)
     if(isFinalPage) document.querySelectorAll("#nextPageBtn").forEach((node)=> node.disabled = true)
-  }, [currentPage])
+  }, [currentPage, finalPage])
 
   return (
     <div className="container-lg maxw-960 d-flex justify-content-between px-0 my-4">
@@ -81,13 +82,20 @@ const Postboard = () => {
 
   const [currentPage, setcurrentPage] = useState(1)
   
-
   const TEST_VARIABLE_FINAL_PAGE = 10;
 
   const finalPage = TEST_VARIABLE_FINAL_PAGE;
 
+
+  const { writeArticle } = useContext(DataBaseContext) 
+
+  const handleAdd = () => {
+    writeArticle('life', 'test title', 'test content')
+  }
+
   return (
     <div className='container-lg maxw-960'>
+      <button onClick={handleAdd}>add</button>
       <PageSelector currentPage={currentPage} setcurrentPage={setcurrentPage} finalPage={finalPage}/>
       <Card/>
       <Card/>

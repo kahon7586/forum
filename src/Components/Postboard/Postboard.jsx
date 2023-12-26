@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import './Postboard.css'
 import { DataBaseContext } from '../../Context/DataBaseContextProvider'
+import Tab from '../Tab/Tab'
 
 const Card = () => {
   return (
@@ -78,9 +79,16 @@ const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
   )
 }
 
+
+
+export const PostboardContext = createContext({})
+
 const Postboard = () => {
 
-  const [currentPage, setcurrentPage] = useState(1)
+  const CATEGORIES = ["All", "Life", "Food"]
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [currentCategory, setCurrentCategory] = useState("All")
   
   const TEST_VARIABLE_FINAL_PAGE = 10;
 
@@ -93,14 +101,23 @@ const Postboard = () => {
     writeArticle('life', 'test title', 'test content')
   }
 
+  const ContextValue = {
+    CATEGORIES,
+    currentPage, setCurrentPage, 
+    currentCategory, setCurrentCategory
+  }
+
   return (
-    <div className='container-lg maxw-960'>
-      <button onClick={handleAdd}>add</button>
-      <PageSelector currentPage={currentPage} setcurrentPage={setcurrentPage} finalPage={finalPage}/>
-      <Card/>
-      <Card/>
-      <PageSelector currentPage={currentPage} setcurrentPage={setcurrentPage} finalPage={finalPage}/>
-    </div>
+    <PostboardContext.Provider value={ContextValue}>
+      <div className='container-lg maxw-960'>
+        <button onClick={handleAdd}>add</button>
+        <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
+        <Tab/>
+        <Card/>
+        <Card/>
+        <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
+      </div>
+    </PostboardContext.Provider>
   )
 }
 

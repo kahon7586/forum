@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { PostboardContext } from '../Postboard/Postboard'
+import { NewPostModal as NewPost } from '../NewPostModal/NewPostModal'
 const Tab = () => {
 
   const { currentCategory, setCurrentCategory, setCurrentPage ,CATEGORIES } = useContext(PostboardContext)
@@ -9,7 +10,7 @@ const Tab = () => {
   })
 
   const CategoryButtons = () => {
-    
+
     return CATEGORIES.map((category) => {
 
       const handleClickCategory = () => {
@@ -17,7 +18,7 @@ const Tab = () => {
         setCurrentPage(1)
       }
 
-      return <button className='nav-link' onClick={handleClickCategory} role="tab" id={`category-${category}`} data-bs-toggle="tab">{category}</button>
+      return <button className='nav-link' onClick={handleClickCategory} role="tab" id={`category-${category}`} key={category} data-bs-toggle="tab">{category}</button>
     })
   }
 
@@ -30,7 +31,7 @@ const Tab = () => {
       </li>
 
       <li className='nav-item' >
-        <button className='btn btn-primary'>Post</button>
+        <NewPost/>
       </li>
     </ul>
   )

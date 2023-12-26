@@ -4,14 +4,14 @@ import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
-import AllContextProvider from './Context/AllContextProvider';
+import GlobalContextProvider from './Context/GlobalContextProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AllContextProvider>
+    <GlobalContextProvider>
       <App />
-    </AllContextProvider>
+    </GlobalContextProvider>
   </React.StrictMode>
 );
 

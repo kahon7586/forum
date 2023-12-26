@@ -1,7 +1,7 @@
 import React from 'react'
 import DataBaseContextProvider from './DataBaseContextProvider'
 
-const AllContextProvider = ( {children} ) => {
+const GlobalContextProvider = ( {children} ) => {
   return (
     <DataBaseContextProvider>
       {children}
@@ -9,4 +9,4 @@ const AllContextProvider = ( {children} ) => {
   )
 }
 
-export default AllContextProvider
+export default GlobalContextProvider

@@ -34,16 +34,6 @@ const PostForm = () => {
 
     let isEveryTargetValid = true
 
-    const TargetValid = (target) => {
-
-      if(target.checkValidity() === true) {
-        target.classList.remove('is-invalid')
-      }else{
-        isEveryTargetValid = false
-        target.classList.add("is-invalid")
-      }
-    }  
-
     const sendNewPost = () => {
       const formData = new FormData( document.getElementById("newPost-form") ) 
       // FormData is a set of key/value pairs, but not a obj. So it can't be console.log directly
@@ -51,9 +41,20 @@ const PostForm = () => {
     }
 
     const checkTargetValid = () => {
+      
+      const TargetValid = (target) => {
+
+        if(target.checkValidity() === true) {
+          target.classList.remove('is-invalid')
+        }else{
+          isEveryTargetValid = false
+          target.classList.add("is-invalid")
+        }
+      }  
+
       arr_targets.forEach( TargetValid )
     }
-    
+
     checkTargetValid()
     
     if( isEveryTargetValid ) {

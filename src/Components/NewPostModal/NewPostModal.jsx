@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { PostboardContext } from '../Postboard/Postboard'
 
 
@@ -7,38 +7,96 @@ const PostForm = () => {
 
   const { CATEGORIES } = useContext(PostboardContext)
 
+  useEffect(() => {
+    const arr_targets = Array.from(document.getElementsByClassName("validation-target"))
+    
+    const removeInvalidClass = (event) => event.target.classList.remove('is-invalid')
+    
+    arr_targets.forEach( (target) => {
+      target.addEventListener('focus', removeInvalidClass)
+    })
+
+    // ----- setup -----
+
+    const removeListener = () => {
+      arr_targets.forEach( (target) => {
+        target.removeEventListener('focus', removeInvalidClass)
+      })
+    }
+  
+    return removeListener
+  })
+
+
+  const handleSubmit = () => {
+
+    const arr_targets = Array.from(document.getElementsByClassName("validation-target"))
+
+    let isEveryTargetValid = true
+
+    const TargetValid = (target) => {
+
+      if(target.checkValidity() === true) {
+        target.classList.remove('is-invalid')
+      }else{
+        isEveryTargetValid = false
+        target.classList.add("is-invalid")
+      }
+    }  
+
+    const sendNewPost = () => {
+      const formData = new FormData( document.getElementById("newPost-form") ) 
+      // FormData is a set of key/value pairs, but not a obj. So it can't be console.log directly
+      console.log(Object.fromEntries(formData))
+    }
+
+    const checkTargetValid = () => {
+      arr_targets.forEach( TargetValid )
+    }
+    
+    checkTargetValid()
+    
+    if( isEveryTargetValid ) {
+      sendNewPost()
+    }
+
+  }
+
   const CategoryOptions = () => {
     return CATEGORIES.map((category) => {
       return <option value={category} key={category}>{category}</option>
     })
   }
 
-  const handleClickPost = () => {
-    return
-  }
-
   return (
-    <form id="newPost-form">
+    <form className='' id="newPost-form" noValidate>
+
       <div className="mb-3">
         <label className="form-label" htmlFor="category">Category</label>
-        <select className='form-select' id='category' required>
+        <select className='form-select validation-target' id='category' name='category' required>
           <option value="">Choose a category</option>
           <CategoryOptions/>
         </select>
+          <div className="invalid-feedback">Choose a category</div>
       </div>
 
       <div className="mb-3">
         <label className="form-label" htmlFor="title">Title</label>
-        <input type="text" id='title' className="form-control" required/>
+        <input className="form-control validation-target" type="text" id='title' name='title' required/>
+        <div className="invalid-feedback">Please fill the title</div>
       </div>
 
       <div className="mb-3">
         <label className='form-label' htmlFor="content">Content</label>
-        <textarea className="form-control" id='content' required/>
+        <textarea className="form-control validation-target" id='content' name='content' required/>
+        <div className="invalid-feedback">Please fill the content</div>
       </div>
 
-      <button className="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
-      <button className="btn btn-primary" type='submit' onClick={handleClickPost}>Post</button>
+      <div className="mb-3 gap-2 d-flex justify-content-end">
+        <button className="btn btn-primary" type='button' onClick={handleSubmit} >Post</button>
+        <button className="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+      </div>
+
     </form>
   )
 }
@@ -61,11 +119,6 @@ export const NewPostModal = () => {
             </div>
 
             <PostForm/>
-
-            <div className="modal-footer mt-4">
-
-            </div>
-
 
           </div>
         </div>

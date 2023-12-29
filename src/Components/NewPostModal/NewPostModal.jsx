@@ -1,11 +1,14 @@
 import React, { useContext, useEffect } from 'react'
 import { PostboardContext } from '../Postboard/Postboard'
+import { DataBaseContext } from '../../Context/DataBaseContextProvider'
 
 
 
 const PostForm = () => {
 
   const { CATEGORIES } = useContext(PostboardContext)
+
+  const { writeArticle } = useContext(DataBaseContext)
 
   useEffect(() => {
     const arr_targets = Array.from(document.getElementsByClassName("validation-target"))
@@ -37,7 +40,10 @@ const PostForm = () => {
     const sendNewPost = () => {
       const formData = new FormData( document.getElementById("newPost-form") ) 
       // FormData is a set of key/value pairs, but not a obj. So it can't be console.log directly
-      console.log(Object.fromEntries(formData))
+      const formDataObj = Object.fromEntries(formData)
+      console.log(formDataObj)
+      const {category, content, title} = Object.fromEntries(formData)
+      writeArticle(category, content, title)
     }
 
     const checkTargetValid = () => {
@@ -59,6 +65,7 @@ const PostForm = () => {
     
     if( isEveryTargetValid ) {
       sendNewPost()
+      window.location.reload();
     }
 
   }

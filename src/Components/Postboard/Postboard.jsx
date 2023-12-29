@@ -1,19 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext,  useContext,  useEffect, useState } from 'react'
 import './Postboard.css'
-import { DataBaseContext } from '../../Context/DataBaseContextProvider'
 import Tab from '../Tab/Tab'
+import Card from '../Card/Card'
+import { DataBaseContext } from '../../Context/DataBaseContextProvider'
 
-const Card = () => {
-  return (
-    <div className="card mb-2">
-      <p className="card-header fs-6">category 1</p>
-      <div className="card-body">
-        <p className="card-title fs-4">title here</p>
-        <p className="card-content">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio, nihil.</p>
-      </div>
-    </div>
-  )
-}
 
 const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
 
@@ -80,7 +70,6 @@ const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
 }
 
 
-
 export const PostboardContext = createContext({})
 
 const Postboard = () => {
@@ -89,17 +78,24 @@ const Postboard = () => {
 
   const [currentPage, setCurrentPage] = useState(1)
   const [currentCategory, setCurrentCategory] = useState("All")
+  const [cards, setCards] = useState(null)
+
+  const { readArticle } = useContext(DataBaseContext)
+
+  
+
+  useEffect(()=> {
+
+    async function loadArticle() {
+      await readArticle( setCards )
+    }
+
+    loadArticle()
+  }, [ readArticle ])
   
   const TEST_VARIABLE_FINAL_PAGE = 10;
 
   const finalPage = TEST_VARIABLE_FINAL_PAGE;
-
-
-  const { writeArticle } = useContext(DataBaseContext) 
-
-  const handleAdd = () => {
-    writeArticle('life', 'test title', 'test content')
-  }
 
   const ContextValue = {
     CATEGORIES,
@@ -112,8 +108,7 @@ const Postboard = () => {
       <div className='container-lg maxw-960'>
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
         <Tab/>
-        <Card/>
-        <Card/>
+        {cards}
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
       </div>
     </PostboardContext.Provider>

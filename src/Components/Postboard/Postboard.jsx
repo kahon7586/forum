@@ -110,7 +110,6 @@ const Postboard = () => {
   return (
     <PostboardContext.Provider value={ContextValue}>
       <div className='container-lg maxw-960'>
-        <button onClick={handleAdd}>add</button>
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
         <Tab/>
         <Card/>

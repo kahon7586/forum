@@ -37,13 +37,13 @@ const PostForm = () => {
 
     let isEveryTargetValid = true
 
-    const sendNewPost = () => {
+    async function sendNewPost() {
       const formData = new FormData( document.getElementById("newPost-form") ) 
       // FormData is a set of key/value pairs, but not a obj. So it can't be console.log directly
       const formDataObj = Object.fromEntries(formData)
       console.log(formDataObj)
       const {category, content, title} = Object.fromEntries(formData)
-      writeArticle(category, content, title)
+      await writeArticle(category, content, title)
     }
 
     const checkTargetValid = () => {

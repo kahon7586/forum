@@ -1,6 +1,6 @@
 import React, { createContext } from 'react'
 import { db } from './FirebaseAuth';
-import { collection, setDoc, getDocs, doc } from 'firebase/firestore';
+import { collection, setDoc, getDocs, doc, serverTimestamp } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
@@ -17,7 +17,7 @@ export const DataBaseContextProvider = ({children}) => {
       title: title,
       content: content,
       user: TEST_USER,
-      postTime: currentTime,
+      postTime: serverTimestamp(),
       ID: postRef.id
     }
 

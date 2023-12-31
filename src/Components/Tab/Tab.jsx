@@ -3,7 +3,7 @@ import { PostboardContext } from '../Postboard/Postboard'
 import { NewPostModal as NewPost } from '../NewPostModal/NewPostModal'
 const Tab = () => {
 
-  const { currentCategory, setCurrentCategory, setCurrentPage ,CATEGORIES } = useContext(PostboardContext)
+  const { currentCategory, setCurrentCategory, setCurrentPage, CATEGORIES } = useContext(PostboardContext)
 
   useEffect(() => {
     document.getElementById(`category-${currentCategory}`).classList.add("active")
@@ -11,7 +11,9 @@ const Tab = () => {
 
   const CategoryButtons = () => {
 
-    return CATEGORIES.map((category) => {
+    const categoryTabs = ["All", ...CATEGORIES]
+
+    return categoryTabs.map((category) => {
 
       const handleClickCategory = () => {
         setCurrentCategory(category)

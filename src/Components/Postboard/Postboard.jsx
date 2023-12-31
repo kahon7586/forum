@@ -1,8 +1,8 @@
 import React, { createContext,  useContext,  useEffect, useState } from 'react'
 import './Postboard.css'
 import Tab from '../Tab/Tab'
-import Card from '../Card/Card'
 import { DataBaseContext } from '../../Context/DataBaseContextProvider'
+import Card from '../Card/Card'
 
 
 const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
@@ -74,24 +74,28 @@ export const PostboardContext = createContext({})
 
 const Postboard = () => {
 
-  const CATEGORIES = ["All", "Life", "Food"]
+  const CATEGORIES = ["Life", "Food", "Learn"]
 
   const [currentPage, setCurrentPage] = useState(1)
   const [currentCategory, setCurrentCategory] = useState("All")
   const [cards, setCards] = useState(null)
-
-  const { readArticle } = useContext(DataBaseContext)
-
   
+  const { fetchArticles } = useContext(DataBaseContext)
+  
+  useEffect(() => {
 
-  useEffect(()=> {
-
-    async function loadArticle() {
-      await readArticle( setCards )
+    async function loadPosts() {
+      
+      const dataList = await fetchArticles()
+      const CardList = dataList.map(({category, title, content}, index) => {
+        return <Card info={ { category, title, content } } key={`${category}-${title}`}/>
+      })
+      setCards(CardList)
     }
 
-    loadArticle()
-  }, [ readArticle ])
+    loadPosts()
+
+  }, [])
   
   const TEST_VARIABLE_FINAL_PAGE = 10;
 

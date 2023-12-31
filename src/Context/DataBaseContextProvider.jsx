@@ -1,49 +1,53 @@
 import React, { createContext } from 'react'
 import { db } from './FirebaseAuth';
-import { ref, set, get } from "firebase/database";
-import Card from '../Components/Card/Card';
+import { collection, setDoc, getDocs, doc } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
 export const DataBaseContextProvider = ({children}) => {
 
-  function writeArticle( category, title, content ) {
+  async function writeArticle( category, title, content ) {
 
-    const articleId = Date.now()
+    const TEST_USER = "anonymous"
+    const currentTime = Date.now()
+    const postRef = doc(collection(db, "posts"))
 
-    set(ref(db, 'articles/' + articleId), {
+    const articleData = {
       category: category,
       title: title,
-      content: content
-    });
+      content: content,
+      user: TEST_USER,
+      postTime: currentTime,
+      ID: postRef.id
+    }
+
+    try{
+      await setDoc(postRef, articleData);
+      console.log("Document written with ID: ", postRef.id)
+    }catch(error){
+      console.log("Error adding document: ", error)
+    }
+
+
   }
 
-  async function readArticle( setState ) {
+  async function fetchArticles( currentCategory , currentPage  ) {
 
-    get(ref(db, 'articles')).then((snapshot) => {
-      if(snapshot.exists()){
-        const result = snapshot.val()
-        console.log(result)
-
-        let temp = []
-        for (const [ID, {category, title, content}] of Object.entries(result)) {
-          const component = <Card info={ {category, title, content} } key={ID}/>
-          temp.push(component)
-        }
-
-        setState(temp)
-      }else{
-        console.log("No data")
-        setState(null)
-      }
-    }).catch((error) => {
-      console.log(error)
+    let dataList = []
+    const querySnapshot = await getDocs(collection(db, "posts"))
+    querySnapshot.forEach((doc) => {
+      const data = doc.data()
+      console.log(data)
+      dataList.unshift(data)
     })
+
+    console.log(dataList)
+    return dataList
   }
 
   const contextValue = {
     writeArticle,
-    readArticle
+    fetchArticles,
   }
 
   return (

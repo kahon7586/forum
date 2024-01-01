@@ -31,7 +31,7 @@ const PostForm = () => {
   })
 
 
-  const handleSubmit = () => {
+  async function handleSubmit() {
 
     const arr_targets = Array.from(document.getElementsByClassName("validation-target"))
 
@@ -64,7 +64,7 @@ const PostForm = () => {
     checkTargetValid()
     
     if( isEveryTargetValid ) {
-      sendNewPost()
+      await sendNewPost()
       window.location.reload();
     }
 

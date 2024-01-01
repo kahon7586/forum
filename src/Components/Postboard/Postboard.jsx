@@ -41,21 +41,22 @@ const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
     )
   }
 
-  const handleClickOnPrev = () => {
+  function handleClickOnPrev() {
     setcurrentPage((prev) => prev - 1)
   }
 
-  const handleClickOnNext = () => {
+  function handleClickOnNext() {
     setcurrentPage((prev) => prev + 1)
   }
 
   
   useEffect(() => {
+
     const isFirstPage = (currentPage === 1 ? true : false)
     const isFinalPage = (currentPage === finalPage ? true : false)
     if(isFirstPage) document.querySelectorAll("#prevPageBtn").forEach((node)=> node.disabled = true)
     if(isFinalPage) document.querySelectorAll("#nextPageBtn").forEach((node)=> node.disabled = true)
-  }, [currentPage, finalPage])
+  })
 
   return (
     <div className="container-lg maxw-960 d-flex justify-content-between px-0 my-4">
@@ -77,32 +78,39 @@ const Postboard = () => {
   const CATEGORIES = ["Life", "Food", "Learn"]
 
   const [currentPage, setCurrentPage] = useState(1)
+  const [finalPage, setFinalPage] = useState(1)
   const [currentCategory, setCurrentCategory] = useState("All")
   const [cards, setCards] = useState(null)
   
-  const { fetchArticles } = useContext(DataBaseContext)
+  const { buildRef, fetchArticles, countDoc } = useContext(DataBaseContext)
   
   useEffect(() => {
+    
+    const currentRef = buildRef(currentCategory, currentPage)
 
     async function loadPosts() {
       
-      const dataList = await fetchArticles()
-      const CardList = dataList.map(({category, title, content}, index) => {
-        return <Card info={ { category, title, content } } key={`${category}-${title}`}/>
+      const dataList = await fetchArticles(currentRef)
+      const CardList = dataList.map(({category, title, content, postTime}, index) => {
+        return <Card info={ { category, title, content, postTime } } key={`${category}-${title}`}/>
       })
       setCards(CardList)
     }
 
+    async function setPageNumber() {
+
+      const totalPostNumber = await countDoc(currentRef)
+      const finalPageNumber = Math.ceil(totalPostNumber/5)
+      setFinalPage(finalPageNumber)
+    }
+
     loadPosts()
+    setPageNumber()
 
-  }, [])
-  
-  const TEST_VARIABLE_FINAL_PAGE = 10;
-
-  const finalPage = TEST_VARIABLE_FINAL_PAGE;
+  }, [currentCategory, currentPage])
 
   const ContextValue = {
-    CATEGORIES,
+    CATEGORIES, 
     currentPage, setCurrentPage, 
     currentCategory, setCurrentCategory
   }

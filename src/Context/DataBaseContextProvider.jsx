@@ -1,15 +1,21 @@
 import React, { createContext } from 'react'
 import { db } from './FirebaseAuth';
-import { collection, setDoc, getDocs, doc, serverTimestamp } from 'firebase/firestore';
+import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
 export const DataBaseContextProvider = ({children}) => {
 
+  async function getPostIndex() {
+    const postIndexRef = doc(db, "posts", "__postIndex")
+    const snapshot = await getDoc(postIndexRef)
+    const { postIndex } = snapshot.data()
+    console.log(postIndex)
+  }
+
   async function writeArticle( category, title, content ) {
 
     const TEST_USER = "anonymous"
-    const currentTime = Date.now()
     const postRef = doc(collection(db, "posts"))
 
     const articleData = {
@@ -31,13 +37,31 @@ export const DataBaseContextProvider = ({children}) => {
 
   }
 
-  async function fetchArticles( currentCategory , currentPage  ) {
+  function buildRef (currentCategory, currentPage) {
 
-    let dataList = []
-    const querySnapshot = await getDocs(collection(db, "posts"))
+    const dbRef = collection(db, "posts")
+    const ref = ( currentCategory === "All" ? query(dbRef, orderBy('postTime', 'asc'), limit(5)) 
+      : query(dbRef, where("category", "==", currentCategory), orderBy('postTime', 'asc'), limit(5)) )
+
+    return ref
+  }
+
+  async function countDoc(ref) {
+    const snapshotForMaxPage = await getCountFromServer(ref)
+    const result = snapshotForMaxPage.data().count
+    console.log('count: ', result)
+    return result
+  }
+
+  async function fetchArticles( ref ) {
+
+    await getPostIndex()
+
+
+    const dataList = []
+    const querySnapshot = await getDocs(ref)
     querySnapshot.forEach((doc) => {
       const data = doc.data()
-      console.log(data)
       dataList.unshift(data)
     })
 
@@ -47,6 +71,8 @@ export const DataBaseContextProvider = ({children}) => {
 
   const contextValue = {
     writeArticle,
+    buildRef,
+    countDoc,
     fetchArticles,
   }
 

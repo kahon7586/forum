@@ -1,21 +1,30 @@
 import React, { createContext } from 'react'
 import { db } from './FirebaseAuth';
-import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy } from 'firebase/firestore';
+import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy, updateDoc } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
 export const DataBaseContextProvider = ({children}) => {
 
   async function getPostIndex() {
-    const postIndexRef = doc(db, "posts", "__postIndex")
+    const postIndexRef = doc(db, "variables", "postIndex")
     const snapshot = await getDoc(postIndexRef)
-    const { postIndex } = snapshot.data()
-    console.log(postIndex)
+    const { Index } = snapshot.data()
+    return Index
   }
 
-  async function writeArticle( category, title, content ) {
+  async function updatePostIndex() {
+    const currentPostIndex = await getPostIndex() 
+    const postIndexRef = doc(db, "variables", "postIndex")
+    await updateDoc(postIndexRef, {
+      Index: currentPostIndex + 1
+    })
+  }
+
+  async function writePost( category, title, content ) {
 
     const TEST_USER = "anonymous"
+    const postIndex = await getPostIndex()
     const postRef = doc(collection(db, "posts"))
 
     const articleData = {
@@ -24,17 +33,18 @@ export const DataBaseContextProvider = ({children}) => {
       content: content,
       user: TEST_USER,
       postTime: serverTimestamp(),
-      ID: postRef.id
+      ID: postRef.id,
+      postIndex: postIndex
     }
 
     try{
       await setDoc(postRef, articleData);
+      await updatePostIndex()
       console.log("Document written with ID: ", postRef.id)
     }catch(error){
       console.log("Error adding document: ", error)
+      throw error
     }
-
-
   }
 
   function buildRef (currentCategory, currentPage) {
@@ -70,7 +80,7 @@ export const DataBaseContextProvider = ({children}) => {
   }
 
   const contextValue = {
-    writeArticle,
+    writePost,
     buildRef,
     countDoc,
     fetchArticles,

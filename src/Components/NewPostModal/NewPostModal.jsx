@@ -8,7 +8,7 @@ const PostForm = () => {
 
   const { CATEGORIES } = useContext(PostboardContext)
 
-  const { writeArticle } = useContext(DataBaseContext)
+  const { writePost } = useContext(DataBaseContext)
 
   useEffect(() => {
     const arr_targets = Array.from(document.getElementsByClassName("validation-target"))
@@ -43,7 +43,7 @@ const PostForm = () => {
       const formDataObj = Object.fromEntries(formData)
       console.log(formDataObj)
       const {category, content, title} = Object.fromEntries(formData)
-      await writeArticle(category, content, title)
+      await writePost(category, content, title)
     }
 
     const checkTargetValid = () => {
@@ -64,8 +64,13 @@ const PostForm = () => {
     checkTargetValid()
     
     if( isEveryTargetValid ) {
-      await sendNewPost()
-      window.location.reload();
+      try{
+        await sendNewPost()
+        window.location.reload();
+      }catch(error){
+        console.log("error occured")
+        console.log(error)
+      }
     }
 
   }

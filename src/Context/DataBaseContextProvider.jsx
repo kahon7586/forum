@@ -1,6 +1,6 @@
 import React, { createContext } from 'react'
 import { db } from './FirebaseAuth';
-import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy, updateDoc } from 'firebase/firestore';
+import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy, updateDoc, } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
@@ -47,16 +47,27 @@ export const DataBaseContextProvider = ({children}) => {
     }
   }
 
-  function buildRef (currentCategory, currentPage) {
+   function buildQuery (currentCategory, currentPage = undefined) {
 
     const dbRef = collection(db, "posts")
-    const ref = ( currentCategory === "All" ? query(dbRef, orderBy('postTime', 'asc'), limit(5)) 
-      : query(dbRef, where("category", "==", currentCategory), orderBy('postTime', 'asc'), limit(5)) )
 
-    return ref
+    let postNumberPerPage = 5
+
+    const wholeRef = ( 
+      currentCategory === "All" ? 
+      query(dbRef, orderBy('postIndex', 'desc')) : 
+      query(dbRef, where("category", "==", currentCategory), orderBy('postIndex', 'desc')) 
+      )
+    
+    if ( currentPage === undefined ) return wholeRef
+
+
+    const partialRef = query(wholeRef, limit( postNumberPerPage * currentPage ))
+    return partialRef
+    
   }
 
-  async function countDoc(ref) {
+  async function countDoc( ref ) {
     const snapshotForMaxPage = await getCountFromServer(ref)
     const result = snapshotForMaxPage.data().count
     console.log('count: ', result)
@@ -65,14 +76,19 @@ export const DataBaseContextProvider = ({children}) => {
 
   async function fetchArticles( ref ) {
 
-    await getPostIndex()
-
+    let postNumberPerPage = 5
 
     const dataList = []
     const querySnapshot = await getDocs(ref)
-    querySnapshot.forEach((doc) => {
+
+      const finalPagePostNum = querySnapshot.docs.length % postNumberPerPage
+      const n = ( finalPagePostNum === 0 ? 5 : finalPagePostNum)
+
+      const finalSnapshot = querySnapshot.docs.slice(-n)
+
+      finalSnapshot.forEach((doc) => {
       const data = doc.data()
-      dataList.unshift(data)
+      dataList.push(data)
     })
 
     console.log(dataList)
@@ -81,7 +97,7 @@ export const DataBaseContextProvider = ({children}) => {
 
   const contextValue = {
     writePost,
-    buildRef,
+    buildQuery,
     countDoc,
     fetchArticles,
   }

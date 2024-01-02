@@ -82,30 +82,36 @@ const Postboard = () => {
   const [currentCategory, setCurrentCategory] = useState("All")
   const [cards, setCards] = useState(null)
   
-  const { buildRef, fetchArticles, countDoc } = useContext(DataBaseContext)
+  const { buildQuery, fetchArticles, countDoc } = useContext(DataBaseContext)
   
-  useEffect(() => {
+  useEffect( () => {
     
-    const currentRef = buildRef(currentCategory, currentPage)
+    function setUp() {
 
-    async function loadPosts() {
+      const currentRef = buildQuery(currentCategory, currentPage)
+      const wholeRef = buildQuery(currentCategory)
       
-      const dataList = await fetchArticles(currentRef)
-      const CardList = dataList.map(({category, title, content, postTime}, index) => {
-        return <Card info={ { category, title, content, postTime } } key={`${category}-${title}`}/>
-      })
-      setCards(CardList)
+      async function loadPosts() {
+        
+        const dataList = await fetchArticles(currentRef)
+        const CardList = dataList.map(({category, title, content, postTime}, index) => {
+          return <Card info={ { category, title, content, postTime } } key={`${category}-${title}`}/>
+        })
+        setCards(CardList)
+      }
+      
+      async function setPageNumber() {
+        
+        const totalPostNumber = await countDoc(wholeRef)
+        const finalPageNumber = Math.ceil(totalPostNumber/5)
+        setFinalPage(finalPageNumber)
+      }
+      
+      loadPosts()
+      setPageNumber()
     }
 
-    async function setPageNumber() {
-
-      const totalPostNumber = await countDoc(currentRef)
-      const finalPageNumber = Math.ceil(totalPostNumber/5)
-      setFinalPage(finalPageNumber)
-    }
-
-    loadPosts()
-    setPageNumber()
+    setUp()
 
   }, [currentCategory, currentPage])
 

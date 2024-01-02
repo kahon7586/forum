@@ -85,7 +85,7 @@ const Postboard = () => {
   const { buildQuery, fetchArticles, countDoc } = useContext(DataBaseContext)
   
   useEffect( () => {
-    
+
     function setUp() {
 
       const currentRef = buildQuery(currentCategory, currentPage)
@@ -113,7 +113,7 @@ const Postboard = () => {
 
     setUp()
 
-  }, [currentCategory, currentPage])
+  }, [currentCategory, currentPage, buildQuery, countDoc, fetchArticles])
 
   const ContextValue = {
     CATEGORIES, 

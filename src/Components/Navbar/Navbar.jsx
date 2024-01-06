@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaUserCircle } from "react-icons/fa";
 import { auth } from '../../Context/FirebaseAuth';
 import { useAuth } from '../../Context/AuthContextProvider';
-// import './LoginSignUpModal.css'
+import LoginBtn from './LoginBtn.jsx'
 
 const NavbarBrand = () => {
   return <a href='/' className='navbar-brand'>Brand</a>
@@ -16,50 +16,6 @@ const NavbarSearch = () => {
     </form>
   )
 }
-
-const LoginBtn = () => {
-
-  const [currentMode, setCurrentMode] = useState('login')
-
-  const loginRadioRef = useRef(null)
-  const loginRef = useRef(null)
-  const signUpRadioRef = useRef(null)
-  const signUpRef = useRef(null)
-
-  const selectedStyle = ["border-bottom", "border-primary", "rounded-0"]
-
-  useEffect(() => {
-    
-  })
-
-  return (
-    <div className="wrapper">
-      <button className="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#LoginSignUpModal">Login</button>
-      <div className="modal" tabIndex="-1" id="LoginSignUpModal">
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header d-flex justify-content-center">
-            <input className="btn-check" type="radio" ref={loginRadioRef}  name="login-signUp" id="Login" autoComplete="off" defaultChecked/>
-            <label className="btn" ref={loginRef} htmlFor="Login">Login</label>
-
-            <input className="btn-check" type="radio" ref={signUpRadioRef}  name="login-signUp" id="SignUp" autoComplete="off"/>
-            <label className="btn" ref={signUpRef} htmlFor="SignUp">Sign Up</label>
-          </div>
-          <div className="modal-body">
-            <p>Modal body text goes here.</p>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" className="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-      </div>
-    </div>
-  )
-}
-
-
 
 const User = () => {
 

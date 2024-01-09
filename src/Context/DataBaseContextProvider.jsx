@@ -1,10 +1,46 @@
-import React, { createContext } from 'react'
+import React, { createContext, useContext } from 'react'
 import { db } from './FirebaseAuth';
 import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy, updateDoc, } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
+export function useDataBase() {
+  return useContext(DataBaseContext)
+}
+
 export const DataBaseContextProvider = ({children}) => {
+
+  async function checkUserExist ( user ) {
+    const userRef = doc(db, "users", user.uid)
+    try{
+      const snapshot = await getDoc(userRef)
+      if(snapshot.exists()){
+        console.log('user data exist')
+      }else{
+        console.log('user data not exist, trying to build a new one.')
+        await buildUserData(user)
+        console.log('user data is now set')
+      }
+    }catch(error){
+      console.log('error occured when checking user data exist: ' + error.code)
+    }
+    
+  }
+
+  async function buildUserData( user ) {
+    const userRef = doc(db, "users", user.uid)
+
+    const nickName = 'anonymous'
+
+    const userData = {
+      nickname: nickName,
+      email: user.email,
+      uid: user.uid,
+      postsID:[]
+    }
+
+    await setDoc(userRef, userData)
+  }
 
   async function getPostIndex() {
     const postIndexRef = doc(db, "variables", "postIndex")
@@ -100,6 +136,7 @@ export const DataBaseContextProvider = ({children}) => {
     buildQuery,
     countDoc,
     fetchArticles,
+    checkUserExist
   }
 
   return (

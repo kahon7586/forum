@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { auth } from './FirebaseAuth'
+import { useDataBase } from './DataBaseContextProvider'
 
 
 const AuthContext = createContext(null)
@@ -14,8 +15,9 @@ const AuthContextProvider = ({children}) => {
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const { checkUserExist } = useDataBase()
+  
   useEffect(() => {
-
 
     //Calling onAuthStateChanged() 
     //1. adds an observer/listener for changes to the user's sign-in state , AND
@@ -35,6 +37,9 @@ const AuthContextProvider = ({children}) => {
       setCurrentUser(user)
       if(user){
         console.log('current user: ' + user.email)
+
+        checkUserExist(user)
+
       }else{
         console.log('current user: ' + user)
       }
@@ -42,7 +47,7 @@ const AuthContextProvider = ({children}) => {
     })
 
     return unsubscribe
-  }, [])
+  }, [checkUserExist])
 
 
   function createNewUser(email, password) {

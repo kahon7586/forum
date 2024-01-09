@@ -5,8 +5,6 @@ import { useAuth } from '../../Context/AuthContextProvider'
 const MODE_LOGIN = 'login'
 const MODE_SIGNIN = 'signIn'
 
-
-
 const LoginForm = ( {currentMode} ) => {
 
   const { login } = useAuth()

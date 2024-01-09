@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { FaUserCircle } from "react-icons/fa";
-import { auth } from '../../Context/FirebaseAuth';
 import { useAuth } from '../../Context/AuthContextProvider';
 import LoginBtn from './LoginBtn.jsx'
 
@@ -17,33 +16,64 @@ const NavbarSearch = () => {
   )
 }
 
+const UserSetting = () => {
+  return (
+    <>
+      <div className="" type="button" data-bs-toggle="offcanvas" data-bs-target="#userSettingOffcanvas" aria-controls="offcanvasExample">
+        setting
+      </div>
+
+      <div className='offcanvas offcanvas-start' tabIndex={"-1"} id="userSettingOffcanvas" aria-labelledby="offcanvasLabel">
+        <div className="offcanvas-header">
+          <h1 className="offcanvas-title" id='offcanvasLabel'>Setting</h1>
+          <button className="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+      </div>
+    </>
+  )
+}
+
 const User = () => {
 
-  const { currentUser } = useAuth()
+  const { currentUser, logout } = useAuth()
+
 
   useEffect(() => {
-    console.log('CurrentUser: ' + currentUser)
+    console.log(currentUser)
   },[])
+
+  function handleLogOut() {
+    logout()
+    // document.location.reload()
+  }
 
   if(!currentUser) return <LoginBtn/>
 
 
+  // <button className='btn dropdown-toggler' id='userDropdownMenuIcon' type='button' data-bs-toggle='dropdown' data-bs-auto-close="outside" aria-expanded="false">
+  //     <FaUserCircle/></button>
+
   return (
-  <div className='dropdown'>
-    <button className='btn dropdown-toggler' id='userDropdownMenuIcon' type='button' data-bs-toggle='dropdown' aria-expanded="false">
-      <FaUserCircle/></button>
-    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdownMenuIcon">
-      <li><a href="#item1" className="dropdown-item">Setting</a></li>
-      <li><hr className="dropdown-divider" /></li>
-      <li><a href="#item2" className="dropdown-item">log out</a></li>
-    </ul>
-  </div>
+    <>
+     <button className="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#userSettingOffcanvas" aria-controls="userSettingOffcanvas">
+       <FaUserCircle/></button>
+
+      <div className='offcanvas offcanvas-start' tabIndex={"-1"} id="userSettingOffcanvas" aria-labelledby="offcanvasLabel">
+        <div className="offcanvas-header">
+          <h1 className="offcanvas-title" id='offcanvasLabel'>Setting</h1>
+          <button className="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div className="offcanvas-body">
+          <button className='btn' type='button' onClick={handleLogOut}>Log out</button>
+        </div>
+      </div>
+    </>
   )
 }
 
 const Navbar = () => {
   return (
-    <nav className='navbar navbar-expand-lg bg-body-tertiary'>
+    <nav className='navbar bg-body-tertiary'>
       <div className="container-fluid">
         <div className="wrapper d-flex">
           <NavbarBrand/>

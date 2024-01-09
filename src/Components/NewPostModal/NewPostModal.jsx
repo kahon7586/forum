@@ -42,8 +42,8 @@ const PostForm = () => {
       // FormData is a set of key/value pairs, but not a obj. So it can't be console.log directly
       const formDataObj = Object.fromEntries(formData)
       console.log(formDataObj)
-      const {category, content, title} = Object.fromEntries(formData)
-      await writePost(category, content, title)
+      const {category, title, content} = Object.fromEntries(formData)
+      await writePost(category, title, content)
     }
 
     const checkTargetValid = () => {

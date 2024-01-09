@@ -16,22 +16,6 @@ const NavbarSearch = () => {
   )
 }
 
-const UserSetting = () => {
-  return (
-    <>
-      <div className="" type="button" data-bs-toggle="offcanvas" data-bs-target="#userSettingOffcanvas" aria-controls="offcanvasExample">
-        setting
-      </div>
-
-      <div className='offcanvas offcanvas-start' tabIndex={"-1"} id="userSettingOffcanvas" aria-labelledby="offcanvasLabel">
-        <div className="offcanvas-header">
-          <h1 className="offcanvas-title" id='offcanvasLabel'>Setting</h1>
-          <button className="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-      </div>
-    </>
-  )
-}
 
 const User = () => {
 
@@ -39,7 +23,7 @@ const User = () => {
 
 
   useEffect(() => {
-    console.log(currentUser)
+
   },[])
 
   function handleLogOut() {

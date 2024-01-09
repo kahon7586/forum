@@ -4,11 +4,11 @@ import AuthContextProvider from './AuthContextProvider'
 
 const GlobalContextProvider = ( {children} ) => {
   return (
-    <AuthContextProvider>
     <DataBaseContextProvider>
+      <AuthContextProvider>
       {children}
+      </AuthContextProvider>
     </DataBaseContextProvider>
-    </AuthContextProvider>
   )
 }
 

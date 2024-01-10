@@ -42,6 +42,13 @@ export const DataBaseContextProvider = ({children}) => {
     await setDoc(userRef, userData)
   }
 
+  async function updateUserData( user ) {
+    const currentUserDataRef = doc(db, "users", user.uid)
+    await updateDoc(currentUserDataRef, {
+      test: true
+    })
+  }
+
   async function getPostIndex() {
     const postIndexRef = doc(db, "variables", "postIndex")
     const snapshot = await getDoc(postIndexRef)
@@ -57,9 +64,8 @@ export const DataBaseContextProvider = ({children}) => {
     })
   }
 
-  async function writePost( category, title, content ) {
+  async function writePost( user, category, title, content ) {
 
-    const TEST_USER = "anonymous"
     const postIndex = await getPostIndex()
     const postRef = doc(collection(db, "posts"))
 
@@ -67,7 +73,8 @@ export const DataBaseContextProvider = ({children}) => {
       category: category,
       title: title,
       content: content,
-      user: TEST_USER,
+      userUID: user.uid,
+      userEmail: user.email,
       postTime: serverTimestamp(),
       ID: postRef.id,
       postIndex: postIndex
@@ -136,7 +143,8 @@ export const DataBaseContextProvider = ({children}) => {
     buildQuery,
     countDoc,
     fetchArticles,
-    checkUserExist
+    checkUserExist,
+    updateUserData
   }
 
   return (

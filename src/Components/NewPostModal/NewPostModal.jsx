@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { PostboardContext } from '../Postboard/Postboard'
 import { DataBaseContext } from '../../Context/DataBaseContextProvider'
+import { useAuth } from '../../Context/AuthContextProvider'
 
 
 
@@ -9,6 +10,7 @@ const PostForm = () => {
   const { CATEGORIES } = useContext(PostboardContext)
 
   const { writePost } = useContext(DataBaseContext)
+  const { currentUser } = useAuth()
 
   useEffect(() => {
     const arr_targets = Array.from(document.getElementsByClassName("validation-target"))
@@ -43,7 +45,7 @@ const PostForm = () => {
       const formDataObj = Object.fromEntries(formData)
       console.log(formDataObj)
       const {category, title, content} = Object.fromEntries(formData)
-      await writePost(category, title, content)
+      await writePost(currentUser, category, title, content)
     }
 
     const checkTargetValid = () => {

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from '../../Context/AuthContextProvider';
 import LoginBtn from './LoginBtn.jsx'
+import { useDataBase } from '../../Context/DataBaseContextProvider.jsx';
 
 const NavbarBrand = () => {
   return <a href='/' className='navbar-brand'>Brand</a>
@@ -20,6 +21,7 @@ const NavbarSearch = () => {
 const User = () => {
 
   const { currentUser, logout } = useAuth()
+  const { updateUserData } = useDataBase()
 
 
   useEffect(() => {
@@ -28,14 +30,16 @@ const User = () => {
 
   function handleLogOut() {
     logout()
-    // document.location.reload()
+    document.location.reload()
+  }
+
+  function handleTest() {
+    updateUserData(currentUser)
   }
 
   if(!currentUser) return <LoginBtn/>
 
 
-  // <button className='btn dropdown-toggler' id='userDropdownMenuIcon' type='button' data-bs-toggle='dropdown' data-bs-auto-close="outside" aria-expanded="false">
-  //     <FaUserCircle/></button>
 
   return (
     <>
@@ -48,6 +52,7 @@ const User = () => {
           <button className="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div className="offcanvas-body">
+          <button className='btn' type='button' onClick={handleTest}>test update user</button>
           <button className='btn' type='button' onClick={handleLogOut}>Log out</button>
         </div>
       </div>

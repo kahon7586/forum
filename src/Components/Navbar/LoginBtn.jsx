@@ -45,6 +45,8 @@ const LoginForm = ( {currentMode} ) => {
           await login(email.value, password.value)
           console.log('login sucessed')
 
+          window.location.reload()
+
         }catch(error){
           if(error.code === 'auth/invalid-credential'){
             setError('Invalid Email or password, try again.')
@@ -129,6 +131,8 @@ const SignInForm = ( {currentMode} ) => {
         try{
           await createNewUser(email.value, password.value)
           console.log('SignIn sucessed')
+
+          window.location.reload()
 
         }catch(error){
           if(error.code === 'auth/invalid-credential'){

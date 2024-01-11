@@ -94,8 +94,8 @@ const Postboard = () => {
       async function loadPosts() {
         
         const dataList = await fetchArticles(currentRef)
-        const CardList = dataList.map(({category, title, content, postTime}, index) => {
-          return <Card info={ { category, title, content, postTime } } key={`${category}-${title}`}/>
+        const CardList = dataList.map(({category, title, content, postTime, userInfo, id}, index) => {
+          return <Card info={ { category, title, content, postTime, userInfo, id } } key={`${category}-${title}`}/>
         })
         setCards(CardList)
       }

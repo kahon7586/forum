@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react'
 import { db } from './FirebaseAuth';
-import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy, updateDoc, } from 'firebase/firestore';
+import { getDoc, limit, getCountFromServer ,collection, setDoc, getDocs, doc, serverTimestamp, query, where, orderBy, updateDoc, deleteDoc, } from 'firebase/firestore';
 
 export const DataBaseContext = createContext({});
 
@@ -73,10 +73,12 @@ export const DataBaseContextProvider = ({children}) => {
       category: category,
       title: title,
       content: content,
-      userUID: user.uid,
-      userEmail: user.email,
+      userInfo:{
+        uid: user.uid,
+        email: user.email
+      },
       postTime: serverTimestamp(),
-      ID: postRef.id,
+      id: postRef.id,
       postIndex: postIndex
     }
 
@@ -88,6 +90,21 @@ export const DataBaseContextProvider = ({children}) => {
       console.log("Error adding document: ", error)
       throw error
     }
+  }
+
+  async function deletePost( id ) {
+    console.log('id: ' + id)
+    const dbRef = doc(db, "posts", id)
+    
+    try{
+      const postSnapshot = await getDoc(dbRef)
+      console.log(postSnapshot.data())
+      await deleteDoc(dbRef)
+      console.log('post deleted')
+    }catch(error){
+      console.log('error occured when deleting post, error code: ' + error.code)
+    }
+
   }
 
    function buildQuery (currentCategory, currentPage = undefined) {
@@ -144,7 +161,8 @@ export const DataBaseContextProvider = ({children}) => {
     countDoc,
     fetchArticles,
     checkUserExist,
-    updateUserData
+    updateUserData,
+    deletePost
   }
 
   return (

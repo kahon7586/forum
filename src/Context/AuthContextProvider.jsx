@@ -19,14 +19,7 @@ const AuthContextProvider = ({children}) => {
   
   useEffect(() => {
 
-    if(currentUser){
-      console.log('current user: ' + currentUser.email)
-
-      checkUserExist(currentUser)
-
-    }else{
-      console.log('current user: ' + currentUser)
-    }
+ 
 
     //Calling onAuthStateChanged() 
     //1. adds an observer/listener for changes to the user's sign-in state , AND
@@ -45,11 +38,22 @@ const AuthContextProvider = ({children}) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user)
       setLoading(false)
-
     })
 
     return unsubscribe
-  }, [checkUserExist])
+  }, [])
+
+
+  useEffect(() => {
+    if(currentUser){
+      console.log('current user: ' + currentUser.email)
+
+      checkUserExist(currentUser)
+
+    }else{
+      console.log('current user: ' + currentUser)
+    }
+  }, [currentUser, checkUserExist])
 
   function createNewUser(email, password) {
     return createUserWithEmailAndPassword(auth, email, password)

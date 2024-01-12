@@ -107,7 +107,7 @@ export const DataBaseContextProvider = ({children}) => {
 
   }
 
-   function buildQuery (currentCategory, currentPage = undefined) {
+   function buildQuery (currentCategory = "All", currentPage = undefined) {
 
     const dbRef = collection(db, "posts")
 
@@ -127,6 +127,24 @@ export const DataBaseContextProvider = ({children}) => {
     
   }
 
+  function turnSnapshotIntoDataList ( snapshot ) {
+    let resultDataList = []
+    
+    snapshot.forEach((doc) => {
+      resultDataList.push(doc.data())
+    })
+
+    return resultDataList
+  }
+
+  async function getAllPostData () {
+    const wholeRef = buildQuery()
+
+    const allPostSnapshot = await getDocs(wholeRef)
+    const dataList = turnSnapshotIntoDataList(allPostSnapshot)
+    return dataList
+  }
+
   async function countDoc( ref ) {
     const snapshotForMaxPage = await getCountFromServer(ref)
     const result = snapshotForMaxPage.data().count
@@ -134,11 +152,10 @@ export const DataBaseContextProvider = ({children}) => {
     return result
   }
 
-  async function fetchArticles( ref ) {
+  async function getShownPost( ref ) {
 
     let postNumberPerPage = 5
 
-    const dataList = []
     const querySnapshot = await getDocs(ref)
 
       const finalPagePostNum = querySnapshot.docs.length % postNumberPerPage
@@ -146,10 +163,7 @@ export const DataBaseContextProvider = ({children}) => {
 
       const finalSnapshot = querySnapshot.docs.slice(-n)
 
-      finalSnapshot.forEach((doc) => {
-      const data = doc.data()
-      dataList.push(data)
-    })
+      const dataList = turnSnapshotIntoDataList(finalSnapshot)
 
     console.log(dataList)
     return dataList
@@ -159,10 +173,11 @@ export const DataBaseContextProvider = ({children}) => {
     writePost,
     buildQuery,
     countDoc,
-    fetchArticles,
+    getShownPost,
     checkUserExist,
     updateUserData,
-    deletePost
+    deletePost,
+    getAllPostData
   }
 
   return (

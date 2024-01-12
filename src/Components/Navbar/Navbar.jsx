@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from '../../Context/AuthContextProvider';
 import LoginBtn from './LoginBtn.jsx'
@@ -9,10 +9,24 @@ const NavbarBrand = () => {
 }
 
 const NavbarSearch = () => {
+
+  const [search, setSearch] = useState('')
+  const searchInputref = useRef(null)
+
+  useEffect(() => {
+    console.log('searching: ' + search)
+  })
+  
+  function handleOnChange() {
+    console.log('changed')
+    console.log(searchInputref.current.value)
+    setSearch(searchInputref.current.value)
+  }
+
   return (
     <form className='d-flex' role='search'>
-      <input className='form-control me-2' type='search' placeholder='Search' aria-label='Search'/>
-      <button className="btn btn-outline-primary" type='submit'>Search</button>
+      <input className='form-control me-2' onChange={handleOnChange} ref={searchInputref} type='text' placeholder='Search' aria-label='Search'/>
+      {/* <button className="btn btn-outline-primary" type='button'>Search</button> */}
     </form>
   )
 }

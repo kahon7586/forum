@@ -13,6 +13,35 @@ const NavbarSearch = () => {
   const [search, setSearch] = useState('')
   const searchInputref = useRef(null)
 
+  const allPostDataRef = useRef(null)
+
+  const { getAllPostData } = useDataBase()
+
+  useEffect(() => {
+
+    async function searchOnClick() {
+      try{
+        console.log('fetching all data...')
+        const allPostDataList = await getAllPostData()
+        allPostDataRef.current = allPostDataList
+        console.log('fetching all data done, dataList: ')
+        console.log(allPostDataRef.current)
+      }catch(error){
+        console.log('error occur when fetching all data, error code: ' + error.code)
+      }
+    }
+
+    searchInputref.current.addEventListener('click', searchOnClick, {once: true});
+
+
+    function cleanUp() {
+      searchInputref.current.removeEventListener('click', searchOnClick, {once: true});
+    }
+
+    return cleanUp
+
+  },[getAllPostData])
+
   useEffect(() => {
     console.log('searching: ' + search)
   })

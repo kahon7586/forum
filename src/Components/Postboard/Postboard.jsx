@@ -1,8 +1,7 @@
-import React, { createContext,  useContext,  useEffect, useState } from 'react'
+import React, { createContext, useEffect, } from 'react'
 import './Postboard.css'
 import Tab from '../Tab/Tab'
-import { DataBaseContext } from '../../Context/DataBaseContextProvider'
-import Card from '../Card/Card'
+import { usePostboard } from '../../Context/PostboardContextProvider'
 
 
 const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
@@ -75,61 +74,16 @@ export const PostboardContext = createContext({})
 
 const Postboard = () => {
 
-  const CATEGORIES = ["Life", "Food", "Learn"]
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const [finalPage, setFinalPage] = useState(1)
-  const [currentCategory, setCurrentCategory] = useState("All")
-  const [cards, setCards] = useState(null)
-  
-  const { buildQuery, fetchArticles, countDoc } = useContext(DataBaseContext)
-  
-  useEffect( () => {
-
-    function setUp() {
-
-      const currentRef = buildQuery(currentCategory, currentPage)
-      const wholeRef = buildQuery(currentCategory)
-      
-      async function loadPosts() {
-        
-        const dataList = await fetchArticles(currentRef)
-        const CardList = dataList.map(({category, title, content, postTime, userInfo, id}, index) => {
-          return <Card info={ { category, title, content, postTime, userInfo, id } } key={`${category}-${title}`}/>
-        })
-        setCards(CardList)
-      }
-      
-      async function setPageNumber() {
-        
-        const totalPostNumber = await countDoc(wholeRef)
-        const finalPageNumber = Math.ceil(totalPostNumber/5)
-        setFinalPage(finalPageNumber)
-      }
-      
-      loadPosts()
-      setPageNumber()
-    }
-
-    setUp()
-
-  }, [currentCategory, currentPage, buildQuery, countDoc, fetchArticles])
-
-  const ContextValue = {
-    CATEGORIES, 
-    currentPage, setCurrentPage, 
-    currentCategory, setCurrentCategory
-  }
+  const { currentPage, setCurrentPage, finalPage, cards } = usePostboard()
 
   return (
-    <PostboardContext.Provider value={ContextValue}>
-      <div className='container-lg maxw-960'>
+    <div className='container-lg maxw-960'>
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
         <Tab/>
         {cards}
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
       </div>
-    </PostboardContext.Provider>
+
   )
 }
 

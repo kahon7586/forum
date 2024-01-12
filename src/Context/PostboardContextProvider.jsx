@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useDataBase } from './DataBaseContextProvider'
-import Card from '../Components/Card/Card'
 
 export const PostboardContext = createContext({})
 
@@ -15,7 +14,7 @@ const PostboardContextProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [finalPage, setFinalPage] = useState(1)
   const [currentCategory, setCurrentCategory] = useState("All")
-  const [cards, setCards] = useState(null)
+  const [postData, setPostData] = useState(null)
   
   const { buildQuery, getShownPost, countDoc } = useDataBase()
   
@@ -29,10 +28,10 @@ const PostboardContextProvider = ({ children }) => {
       async function loadPosts() {
         
         const dataList = await getShownPost(currentRef)
-        const CardList = dataList.map(({category, title, content, postTime, userInfo, id}, index) => {
-          return <Card info={ { category, title, content, postTime, userInfo, id } } key={`${category}-${title}`}/>
-        })
-        setCards(CardList)
+        // const CardList = dataList.map(({category, title, content, postTime, userInfo, id}, index) => {
+        //   return <Card info={ { category, title, content, postTime, userInfo, id } } key={`${category}-${title}`}/>
+        // })
+        setPostData(dataList)
       }
       
       async function setPageNumber() {
@@ -54,7 +53,7 @@ const PostboardContextProvider = ({ children }) => {
     CATEGORIES, finalPage,
     currentPage, setCurrentPage, 
     currentCategory, setCurrentCategory,
-    cards, setCards
+    postData, setPostData
   }
 
 

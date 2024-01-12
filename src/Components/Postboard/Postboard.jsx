@@ -1,7 +1,8 @@
-import React, { createContext, useEffect, } from 'react'
+import React, { createContext, useEffect, useState, } from 'react'
 import './Postboard.css'
 import Tab from '../Tab/Tab'
 import { usePostboard } from '../../Context/PostboardContextProvider'
+import Card from '../Card/Card'
 
 
 const PageSelector = ( {currentPage, setcurrentPage, finalPage} ) => {
@@ -74,13 +75,25 @@ export const PostboardContext = createContext({})
 
 const Postboard = () => {
 
-  const { currentPage, setCurrentPage, finalPage, cards } = usePostboard()
+  const { currentPage, setCurrentPage, finalPage, postData } = usePostboard()
+
+  const [postList, setPostList] = useState(null)
+
+  useEffect(() => {
+
+    if(postData === null) return
+
+    const postNodes = postData.map(({category, title, content, postTime, userInfo, id}, index) => {
+      return <Card info={ { category, title, content, postTime, userInfo, id } } key={`${category}-${title}`}/>
+    })
+    setPostList(postNodes)
+  }, [postData])
 
   return (
     <div className='container-lg maxw-960'>
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
         <Tab/>
-        {cards}
+        {postList}
         <PageSelector currentPage={currentPage} setcurrentPage={setCurrentPage} finalPage={finalPage}/>
       </div>
 

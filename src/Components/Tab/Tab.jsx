@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react'
-import { PostboardContext } from '../Postboard/Postboard'
+import React, { useEffect } from 'react'
 import { NewPostModal as NewPost } from '../NewPostModal/NewPostModal'
+import { usePostboard } from '../../Context/PostboardContextProvider'
 const Tab = () => {
 
-  const { currentCategory, setCurrentCategory, setCurrentPage, CATEGORIES } = useContext(PostboardContext)
+  const { currentCategory, setCurrentCategory, setCurrentPage, CATEGORIES } = usePostboard()
 
   useEffect(() => {
     document.getElementById(`category-${currentCategory}`).classList.add("active")

@@ -1,15 +1,15 @@
-import React, { useContext, useEffect } from 'react'
-import { PostboardContext } from '../Postboard/Postboard'
-import { DataBaseContext } from '../../Context/DataBaseContextProvider'
+import React, { useEffect } from 'react'
+import { useDataBase } from '../../Context/DataBaseContextProvider'
 import { useAuth } from '../../Context/AuthContextProvider'
+import { usePostboard } from '../../Context/PostboardContextProvider'
 
 
 
 const PostForm = () => {
 
-  const { CATEGORIES } = useContext(PostboardContext)
+  const { CATEGORIES } = usePostboard()
 
-  const { writePost } = useContext(DataBaseContext)
+  const { writePost } = useDataBase()
   const { currentUser } = useAuth()
 
   useEffect(() => {

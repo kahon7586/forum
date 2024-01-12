@@ -3,6 +3,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from '../../Context/AuthContextProvider';
 import LoginBtn from './LoginBtn.jsx'
 import { useDataBase } from '../../Context/DataBaseContextProvider.jsx';
+import { usePostboard } from '../../Context/PostboardContextProvider.jsx';
 
 const NavbarBrand = () => {
   return <a href='/' className='navbar-brand'>Brand</a>
@@ -10,12 +11,13 @@ const NavbarBrand = () => {
 
 const NavbarSearch = () => {
 
-  const [search, setSearch] = useState('')
+  // const [search, setSearch] = useState('')
   const searchInputref = useRef(null)
 
   const allPostDataRef = useRef(null)
 
   const { getAllPostData } = useDataBase()
+  const { setPostData } = usePostboard()
 
   useEffect(() => {
 
@@ -43,13 +45,47 @@ const NavbarSearch = () => {
   },[getAllPostData])
 
   useEffect(() => {
-    console.log('searching: ' + search)
+
   })
   
   function handleOnChange() {
-    console.log('changed')
-    console.log(searchInputref.current.value)
-    setSearch(searchInputref.current.value)
+    const searchParam = searchInputref.current.value
+    console.log('searchParam: ' + searchParam)
+
+    const allData = allPostDataRef.current
+
+    const SEARCH_TARGET = ["title", "content", "userInfo"]
+
+    function checkSearchParamIncluded( post ) {
+      const isSearchParamInclued = SEARCH_TARGET.some(target => {
+        console.log(target)
+        if(target === "userInfo"){
+          if( post.userInfo.email.includes(searchParam) ) return true
+        }else{
+          if( post[target].includes(searchParam) ) return true
+        }
+        return false
+      })
+
+      return isSearchParamInclued
+    }
+
+    function getfilterDataList( data ) {
+
+      const result = []
+
+      data.forEach((post, index) => {
+        const isSearchParamInclued = checkSearchParamIncluded(post)
+        if(isSearchParamInclued){ result.push(post) }
+      })
+      return result
+    }
+
+    const filterDataList = getfilterDataList(allData)
+    console.log(filterDataList)
+    setPostData(filterDataList)
+
+
   }
 
   return (

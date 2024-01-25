@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from '../../Context/AuthContextProvider';
 import LoginBtn from './LoginBtn.jsx'
@@ -11,7 +11,6 @@ const NavbarBrand = () => {
 
 const NavbarSearch = () => {
 
-  // const [search, setSearch] = useState('')
   const searchInputref = useRef(null)
 
   const allPostDataRef = useRef(null)
@@ -85,7 +84,7 @@ const NavbarSearch = () => {
     console.log(filterDataList)
     setPostData(filterDataList)
 
-
+    //fix page selector
   }
 
   return (
